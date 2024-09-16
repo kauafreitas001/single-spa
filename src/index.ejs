@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Digital Connecting</title>
+
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+
+
+  <style>
+    #main-container {
+      display: flex;
+      width: 100dvw;
+      height: 100dvh;
+      background-color: #333333ce;
+    }
+    #menu-container {
+      width: 124px;
+      height: 100%;
+    }
+    #content-container {
+      flex-grow: 1;
+      margin: 30px 30px 30px 0;
+    }
+    /* Quando o menu está expandido */
+    body.menu-expanded #menu-container {
+      width: 300px;
+    }
+  </style>
+
+
+  <!--
+    Remova isto se você suporta apenas navegadores que suportam async/await.
+    Isso é necessário para o babel compartilhar código auxiliar grande para compilar async/await em versões mais antigas
+    navegadores. Mais informações em https://github.com/single-spa/create-single-spa/issues/112
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/regenerator-runtime@0.13.7/runtime.min.js"></script>
+  <!--
+    Este CSP permite qualquer host habilitado para SSL e eval() arbitrário, mas você deve limitar ainda mais essas diretivas para aumentar a segurança do seu aplicativo.
+    Saiba mais sobre as políticas CSP em https://content-security-policy.com/#directive
+  -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: localhost:*; script-src 'unsafe-inline' 'unsafe-eval' https: localhost:*; connect-src https: localhost:* ws://localhost:*; style-src 'unsafe-inline' https:; img-src 'self' data: https: localhost:*; object-src 'none';">
+  <meta name="importmap-type" content="systemjs-importmap" />
+  <!-- Se você deseja desativar as substituições de mapas de importação para ambientes específicos (prod), remova o comentário da linha abaixo -->
+  <!-- Mais informações em https://github.com/joeldenning/import-map-overrides/blob/master/docs/configuration.md#domain-list -->
+  <!-- <meta name="import-map-overrides-domains" content="denylist:prod.example.com" /> -->
+
+  <!-- As dependências compartilhadas vão para este mapa de importação. Suas dependências compartilhadas devem ter um dos seguintes formatos:
+
+    1. System.register (preferido quando possível) - https://github.com/systemjs/systemjs/blob/master/docs/system-register.md
+    2. UMD - https://github.com/umdjs/umd
+    3. Global variable
+
+    Mais informações sobre dependências compartilhadas podem ser encontradas em https://single-spa.js.org/docs/recommended-setup#sharing-with-import-maps.
+  -->
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "single-spa": "https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js"
+      }
+    }
+  </script>
+  <link rel="preload" href="https://cdn.jsdelivr.net/npm/single-spa@5.9.0/lib/system/single-spa.min.js" as="script">
+
+  <!-- Adicione o URL do mapa de importação de produtos da sua organização ao src deste script  -->
+  <!-- <script type="systemjs-importmap" src="/importmap.json"></script> -->
+
+  <% if (isLocal) { %>
+  <script type="systemjs-importmap">
+    {
+      "imports": {
+        "@dc/root-config": "//localhost:9000/dc-root-config.js",
+        "@dc/nav-bar": "//localhost:8080/js/app.js",
+        "@dc/atendimento": "//localhost:8081/js/app.js"
+      }
+    }
+  </script>
+  <% } %>
+
+  <!--
+    Se você precisar oferecer suporte a aplicativos Angular, remova o comentário da tag de script abaixo para garantir que apenas uma instância do ZoneJS seja carregada
+    Saiba mais sobre por que se você precisar oferecer suporte a aplicativos Angular, remova o comentário da tag de script abaixo para garantir que apenas uma instância do ZoneJS seja carregada
+    Saiba mais sobre o porquê em https://single-spa.js.org/docs/ecosystem-angular/#zonejs
+  -->
+  <!-- <script src="https://cdn.jsdelivr.net/npm/zone.js@0.11.3/dist/zone.min.js"></script> -->
+
+  <script src="https://cdn.jsdelivr.net/npm/import-map-overrides@2.2.0/dist/import-map-overrides.js"></script>
+  <% if (isLocal) { %>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.js"></script>
+  <% } else { %>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/system.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/systemjs@6.8.3/dist/extras/amd.min.js"></script>
+  <% } %>
+</head>
+<body>
+  <noscript>
+    Você precisa habilitar o JavaScript para executar este aplicativo.
+  </noscript>
+  <div id="main-container">
+    <div id="menu-container"></div>
+    <div id="content-container"></div>
+  </div>
+  <script>
+    System.import('@dc/root-config');
+  </script>
+  <script>
+    // Função para aplicar a classe 'menu-expanded' no body
+    function updateBodyClass() {
+      console.log('entrei');
+      const isExpanded = localStorage.getItem("is_expanded") === "true";
+      if (isExpanded) {
+        document.body.classList.add("menu-expanded");
+      } else {
+        document.body.classList.remove("menu-expanded");
+      }
+    }
+    // Executa a função na inicialização
+    updateBodyClass();
+
+    // Escuta as mudanças no localStorage para atualizar a classe
+    setInterval(updateBodyClass, 500);
+  </script>
+  <import-map-overrides-full show-when-local-storage="devtools" dev-libs></import-map-overrides-full>
+</body>
+</html>
